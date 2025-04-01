@@ -284,7 +284,7 @@ button {
     border: none;
     border-radius: 8px;
     background: var(--dark-sage);
-    color: var(--cream);
+    color: var (--cream);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -574,12 +574,33 @@ room-list::-webkit-scrollbar-track {
     .chat-input {
         margin: 15px;
         padding: 12px;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr auto auto; /* Changed to show language select */
         gap: 8px;
     }
 
     .language-select {
-        display: none; /* Hide language selector on mobile */
+        display: block; /* Show language selector on mobile */
+        padding: 6px 8px; /* Smaller padding */
+        font-size: 12px; /* Smaller font */
+        min-width: 80px; /* Minimum width */
+        max-width: 100px; /* Maximum width */
+    }
+
+    /* Make the input and buttons more compact */
+    input[type="text"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    button#sendMessageBtn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Ensure proper sizing for select dropdown */
+    select.language-select option {
+        font-size: 12px;
+        padding: 4px;
     }
 
     /* Add a menu button for mobile */
