@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBridge</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="transitions.js" defer></script>
+</head>
+<body>
+    <div id="userContainer" class="user-container">
+        <div class="user-info" id="userInfo">
+            <span id="userName" class="user-name"></span>
+            <img id="userProfilePic" class="profile-pic" alt="Profile">
+        </div>
+        <div id="editProfileModal" class="edit-profile-modal hidden">
+            <input type="text" id="newUsername" placeholder="New username">
+            <input type="file" id="newProfilePic" accept="image/*">
+            <div class="modal-buttons">
+                <button id="saveProfileBtn">Save</button>
+                <button id="cancelProfileBtn">Cancel</button>
+            </div>
+        </div>
+        <button id="logoutBtn">Log Out</button>
+    </div>
+
+    <div class="container">
+        <h1>ChatBridge</h1>
+        <p class="subtitle">Connect. Communicate. Bridge the gap.</p>
+        <div class="button-container">
+            <button id="createRoomBtn" class="primary-btn">Create Room</button>
+            <button id="joinRoomBtn" class="secondary-btn">Join Room</button>
+        </div>
+    </div>
+
+    <div class="floating-elements">
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const createRoomBtn = document.getElementById('createRoomBtn');
+            const joinRoomBtn = document.getElementById('joinRoomBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            // Check if user is logged in
+            if (!localStorage.getItem('token')) {
+                pageTransition('login.html');
+                return;
+            }
+
+            document.getElementById('userProfilePic').src = localStorage.getItem('userProfile') || 'default-avatar.png';
+            document.getElementById('userName').textContent = localStorage.getItem('userName');
+
+            createRoomBtn.addEventListener('click', function() {
+                if (!localStorage.getItem('token')) {
+                    pageTransition('login.html');
+                } else {
+                    const roomCode = 'room-' + Math.random().toString(36).substr(2, 9);
+                    const activeRooms = JSON.parse(localStorage.getItem('activeRooms') || '[]');
+                    activeRooms.push(roomCode);
+                    localStorage.setItem('activeRooms', JSON.stringify(activeRooms));
+                    localStorage.setItem('currentRoomCode', roomCode);
+                    pageTransition('chat.html');
+                }
+            });
+
+            joinRoomBtn.addEventListener('click', function() {
+                if (!localStorage.getItem('token')) {
+                    pageTransition('login.html');
+                } else {
+                    const roomCode = prompt('Please enter the room code:');
+                    if (roomCode) {
+                        // Get active rooms, create if doesn't exist
+                        let activeRooms = JSON.parse(localStorage.getItem('activeRooms') || '[]');
+                        
+                        // If room doesn't exist in active rooms, add it
+                        if (!activeRooms.includes(roomCode)) {
+                            activeRooms.push(roomCode);
+                            localStorage.setItem('activeRooms', JSON.stringify(activeRooms));
+                        }
+                        
+                        // Set current room and navigate
+                        localStorage.setItem('currentRoomCode', roomCode);
+                        pageTransition('chat.html');
+                    }
+                }
+            });
+
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('token');
+                pageTransition('login.html');
+            });
+
+            const userInfo = document.getElementById('userInfo');
+            const editProfileModal = document.getElementById('editProfileModal');
+            const newUsername = document.getElementById('newUsername');
+            const newProfilePic = document.getElementById('newProfilePic');
+            const saveProfileBtn = document.getElementById('saveProfileBtn');
+            const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+
+            userInfo.addEventListener('click', function(e) {
+                e.stopPropagation();
+                editProfileModal.classList.remove('hidden');
+                newUsername.value = localStorage.getItem('userName') || '';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!editProfileModal.contains(e.target) && !userInfo.contains(e.target)) {
+                    editProfileModal.classList.add('hidden');
+                }
+            });
+
+            newProfilePic.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        localStorage.setItem('userProfile', e.target.result);
+                        document.getElementById('userProfilePic').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            saveProfileBtn.addEventListener('click', function() {
+                const username = newUsername.value.trim();
+                if (username) {
+                    localStorage.setItem('userName', username);
+                    document.getElementById('userName').textContent = username;
+                }
+                editProfileModal.classList.add('hidden');
+            });
+
+            cancelProfileBtn.addEventListener('click', function() {
+                editProfileModal.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
