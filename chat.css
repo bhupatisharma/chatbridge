@@ -216,6 +216,8 @@ body {
 .original-text {
     margin-bottom: 8px;
     font-size: 1rem;
+    flex: 1;
+    word-break: break-word;
 }
 
 .translation {
@@ -318,17 +320,17 @@ button:hover {
     transform: scale(1.1);
 }
 
+/* Translation toggle button styles */
 .toggle-translation {
     background: transparent;
     border: none;
-    padding: 4px;
-    margin-left: 8px;
+    padding: 4px 8px;
     cursor: pointer;
     opacity: 0.6;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    transform: scale(0.8);
+    margin-left: 8px;
 }
 
 .message.sent .toggle-translation {
@@ -617,6 +619,27 @@ room-list::-webkit-scrollbar-track {
     .copy-btn .material-symbols-outlined {
         font-size: 14px;
     }
+
+    .toggle-translation {
+        padding: 6px;
+        opacity: 0.8;
+        transform: scale(0.9);
+        margin-left: 4px;
+    }
+
+    .message-header {
+        align-items: flex-start;
+    }
+
+    .toggle-translation .material-symbols-outlined {
+        font-size: 18px;
+    }
+
+    .translation {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
 }
 
 /* Add overlay for mobile sidebar */
@@ -685,4 +708,12 @@ room-list::-webkit-scrollbar-track {
 
 .copy-btn .material-symbols-outlined {
     font-size: 16px;  /* Smaller icon size */
+}
+
+/* Message header styling to ensure button visibility */
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
 }
