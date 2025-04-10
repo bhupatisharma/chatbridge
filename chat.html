@@ -84,11 +84,15 @@
             <div class="chat-input">
                 <input type="text" id="messageInput" placeholder="Type your message...">
                 <select id="languageSelect" class="language-select">
-                    <option value="en">English</option>
-                    <option value="de">German</option>
-                    <option value="fr">French</option>
-                    <option value="ja">Japanese</option>
-                    <option value="hi">Hindi</option>
+                    <option value="en">English (Auto Detect)</option>
+                    <option value="fr">English → French</option>
+                    <option value="fr-en">French → English</option>
+                    <option value="de">English → German</option>
+                    <option value="de-en">German → English</option>
+                    <option value="ja">English → Japanese</option>
+                    <option value="ja-en">Japanese → English</option>
+                    <option value="hi">English → Hindi</option>
+                    <option value="hi-en">Hindi → English</option>
                 </select>
                 <button id="sendMessageBtn">Send</button>
             </div>
@@ -119,7 +123,13 @@
             async function translateMessage(text, targetLang) {
                 try {
                     const encodedText = encodeURIComponent(text);
-                    const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=en|${targetLang}&de=your@email.com`;
+                    // Check if it's a reverse translation (e.g., fr-en)
+                    const [sourceLang, targetLanguage] = targetLang.split('-');
+                    const langPair = targetLanguage ? 
+                        `${sourceLang}|${targetLanguage}` : 
+                        `en|${targetLang}`;
+                        
+                    const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${langPair}&de=your@email.com`;
                     
                     const response = await fetch(url);
                     const data = await response.json();
